@@ -53,7 +53,7 @@
             <Group layoutX="54.0" layoutY="72.0">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Titre" />
-                  <TextField layoutX="64.0" layoutY="-17.0" prefHeight="26.0" prefWidth="223.0" promptText="Selectionnez un titre" />
+                  <TextField layoutX="64.0" layoutY="-17.0" prefHeight="26.0" prefWidth="223.0" promptText="Selectionnez un titre" fx:id="title" />
                </children>
             </Group>
             <Group layoutX="49.0" layoutY="112.0">
@@ -78,7 +78,7 @@
             <Group layoutX="51.0" layoutY="157.0">
                <children>
                   <Text layoutX="1.0" layoutY="9.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
-                  <DatePicker layoutX="67.0" layoutY="-7.0" prefHeight="26.0" prefWidth="223.0" promptText="Sélectionnez une date" />
+                  <DatePicker layoutX="67.0" layoutY="-7.0" prefHeight="26.0" prefWidth="223.0" promptText="Sélectionnez une date" fx:id="pickDate"/>
                </children>
             </Group>
             <Group layoutX="54.0" layoutY="213.0">
@@ -86,20 +86,20 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Prix" />
                   <Text layoutX="146.0" layoutY="1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="€   à" />
                   <Text layoutX="276.0" layoutY="1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="€" />
-                  <TextField layoutX="181.0" layoutY="-16.0" prefHeight="26.0" prefWidth="91.0" promptText="Prix max" />
-                  <TextField layoutX="63.0" layoutY="-16.0" prefHeight="26.0" prefWidth="81.0" promptText="Prix min" />
+                  <TextField layoutX="181.0" layoutY="-16.0" prefHeight="26.0" prefWidth="91.0" promptText="Prix max" fx:id="priceMax"/>
+                  <TextField layoutX="63.0" layoutY="-16.0" prefHeight="26.0" prefWidth="81.0" promptText="Prix min" fx:id="priceMin"/>
                </children>
             </Group>
-            <Button layoutX="139.0" layoutY="241.0" mnemonicParsing="false" text="Rechercher" />
-            <Button layoutX="243.0" layoutY="241.0" mnemonicParsing="false" text="Effacer" />
+            <Button layoutX="139.0" layoutY="241.0" mnemonicParsing="false" text="Rechercher" fx:id="search"/>
+            <Button layoutX="243.0" layoutY="241.0" mnemonicParsing="false" onAction="#onClickClear" text="Effacer" fx:id="clear"/>
             <Group layoutX="515.0" layoutY="56.0">
                <children>
-                  <CheckBox mnemonicParsing="false" text="Discogs.com" />
-                  <CheckBox layoutY="30.0" mnemonicParsing="false" text="Fnac.com" />
-                  <CheckBox layoutY="60.0" mnemonicParsing="false" text="Vinylcorner.fr" />
-                  <CheckBox layoutY="90.0" mnemonicParsing="false" text="Leboncoin.fr" />
-                  <CheckBox layoutY="119.0" mnemonicParsing="false" text="Mesvinyles.fr" />
-                  <CheckBox layoutY="147.0" mnemonicParsing="false" text="Culturefactory.fr" />
+                  <CheckBox mnemonicParsing="false" text="Discogs.com" fx:id="discogs"/>
+                  <CheckBox layoutY="30.0" mnemonicParsing="false" text="Fnac.com" fx:id="fnac" />
+                  <CheckBox layoutY="60.0" mnemonicParsing="false" text="Vinylcorner.fr" fx:id="vinylcorner"/>
+                  <CheckBox layoutY="90.0" mnemonicParsing="false" text="Leboncoin.fr" fx:id="leboncoin"/>
+                  <CheckBox layoutY="119.0" mnemonicParsing="false" text="Mesvinyles.fr" fx:id="mesvinyles"/>
+                  <CheckBox layoutY="147.0" mnemonicParsing="false" text="Culturefactory.fr" fx:id="culturefactory"/>
                </children>
             </Group>
          </children>
