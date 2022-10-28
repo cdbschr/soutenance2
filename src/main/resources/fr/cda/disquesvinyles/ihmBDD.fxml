@@ -10,7 +10,8 @@
 <?import javafx.scene.text.Text?>
 
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="428.0" prefWidth="772.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="428.0" prefWidth="772.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="fr.cda.disquesvinyles.VinyleController">
    <children>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Paramètres de la base de données" underline="true">
          <font>
@@ -53,7 +54,7 @@
                </children>
             </Group>
             <Button layoutX="307.0" layoutY="320.0" mnemonicParsing="false" text="Valider" />
-            <Button layoutX="406.0" layoutY="320.0" mnemonicParsing="false" text="Fermer" />
+            <Button layoutX="406.0" layoutY="320.0" mnemonicParsing="false" onAction="#onClickCloseScene" text="Fermer" fx:id="closeDb" />
          </children>
       </AnchorPane>
    </children>
