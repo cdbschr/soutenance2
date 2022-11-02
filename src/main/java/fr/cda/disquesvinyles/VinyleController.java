@@ -1,5 +1,8 @@
 package fr.cda.disquesvinyles;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,7 +12,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
 import java.io.IOException;
+import java.util.List;
 
 public class VinyleController {
 	@FXML
@@ -44,14 +49,32 @@ public class VinyleController {
 	@FXML
 	protected void onClickSearch() {
 		//TODO function recuperation des infos saisies
+		String searchTitle = title.getText();
+		String categorie = category.getValue();
+		String searchDate = pickDate.getValue()
+						.toString()
+						.substring(0,4);
+		String searchPriceMin = priceMin.getText();
+		String searchPriceMax = priceMax.getText();
+		boolean searchDiscogs = discogs.isSelected();
+		boolean searchFnac = fnac.isSelected();
+		boolean searchVinylCorner = vinylcorner.isSelected();
+		boolean searchLeboncoin = leboncoin.isSelected();
+		boolean searchMesVinyles = mesvinyles.isSelected();
+		boolean searchCultureFactory = culturefactory.isSelected();
+
+
 		//TODO function make crawl on website
 		//TODO function afficher le résultat
+
 	}
 
 	//Actions des boutons dans le home
 	@FXML
 	protected void onClickClear() {
 		title.setText("");
+		category.getSelectionModel().clearSelection();
+		refreshComboBox();
 		pickDate.setValue(null);
 		priceMin.setText("");
 		priceMax.setText("");
@@ -63,7 +86,23 @@ public class VinyleController {
 		culturefactory.setSelected(false);
 	}
 
+	public void refreshComboBox() {
+		category.setButtonCell(new ListCell<>() {
+			@Override
+			protected void updateItem(String item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null || empty) {
+					setText(category.getPromptText());
+				} else {
+					setText(item);
+				}
+			}
+		});
+	}
+
 	//Actions du Menu Fichier
+
+
 	public void modalMail() throws IOException {
 		Stage modal = new Stage();
 
@@ -140,4 +179,51 @@ public class VinyleController {
 			e.printStackTrace();
 		}
 	}
+//
+//	public void ScrapLeboncoin(String searchTitle, String searchPriceMin, String searchPriceMax) {
+//		String url = "https://leboncoin.fr/recherche?category=26&text=" + searchTitle + "&price=" + searchPriceMin + "-" + searchPriceMax;
+//
+//		try {
+//			WebClient webClient = new WebClient();
+//
+//			webClient.getOptions().setUseInsecureSSL(true);
+//			webClient.getOptions().setCssEnabled(false);
+//			webClient.getOptions().setJavaScriptEnabled(false);
+//			HtmlPage htmlPage = webClient.getPage(url);
+//
+//			List<HtmlElement> li = htmlPage.getByXPath("//div[1]/div[1]/p");
+//
+//			String res = "";
+//			for (HtmlElement e : li) {
+//				HtmlPage htmlPage1 = webClient.getPage(e.click().getUrl());
+//				String nomArticle = "";
+//				String prixArticle = "";
+//				String description = "";
+//
+//				List<HtmlElement> nom = htmlPage1.getByXPath("//h1[@data-qa-id='adview_title']");
+//				List<HtmlElement> prix = htmlPage1.getByXPath("//span[@class='Roh2X _3gP8T _35DXM _25LNb']");
+//				List<HtmlElement> desc = htmlPage1.getByXPath("//p[@class='sc-bhlBdH gOkeRT']");
+//
+//				for (HtmlElement n : nom) {
+//					nomArticle = n.getTextContent();
+//
+//				}
+//				for (HtmlElement p : prix) {
+//					prixArticle = p.getTextContent();
+//					prixArticle = prixArticle.replace("\u00a0", "");
+//				}
+//				for (HtmlElement d : desc) {
+//					description = d.getTextContent();
+//				}
+//				res += "Article : " + nomArticle +
+//								"\n Prix : " + prixArticle +
+//								"\n Description de l'article : " + description +
+//								"\n lien : " + htmlPage1.getUrl() +
+//								"\n--------------------------------------------------------------------\n";
+//			}
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 }
