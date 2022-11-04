@@ -65,7 +65,7 @@
           <children>
             <Text layoutX="3.0" layoutY="8.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Genre"/>
             <ComboBox fx:id="category" layoutX="69.0" layoutY="-10.0" prefHeight="26.0" prefWidth="223.0"
-                      value="Sélectionnez un genre">
+                      value="Sélectionnez un genre" promptText="Sélectionnez un genre">
               <items>
                 <FXCollections fx:factory="observableArrayList">
                   <String fx:value="Rock" fx:id="rock"/>

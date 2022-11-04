@@ -5,7 +5,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -32,8 +31,6 @@ public class VinyleController {
 	private TextField priceMax;
 	@FXML
 	private Button search;
-	@FXML
-	private Button clear;
 	@FXML
 	private CheckBox discogs;
 	@FXML
@@ -79,7 +76,8 @@ public class VinyleController {
 	@FXML
 	protected void onClickClear() {
 		title.setText("");
-		category.getSelectionModel().selectFirst();
+		category.getSelectionModel().clearSelection();
+		refreshComboBox();
 		pickDate.setValue(null);
 		priceMin.setText("");
 		priceMax.setText("");
@@ -89,6 +87,20 @@ public class VinyleController {
 		leboncoin.setSelected(false);
 		mesvinyles.setSelected(false);
 		culturefactory.setSelected(false);
+	}
+
+	public void refreshComboBox() {
+		category.setButtonCell(new ListCell<>() {
+			@Override
+			protected void updateItem(String item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null || empty) {
+					setText(category.getPromptText());
+				} else {
+					setText(item);
+				}
+			}
+		});
 	}
 
 	//Actions du Menu Fichier
