@@ -7,14 +7,19 @@ import sibModel.*;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
-import java.io.File;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Date;
 
 public class Mail {
-	public static void send(String recipient, File files) {
+	public static void send(String recipient, String search) {
 		Dotenv dotenv = Dotenv.load();
 
 		ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -22,6 +27,14 @@ public class Mail {
 		apiKey.setApiKey(dotenv.get("API_SENDINBLUE"));
 
 		try {
+			//Enregistrement du fichier
+			String path = "recherches/test.txt";
+			PrintWriter print = new PrintWriter(new BufferedWriter
+							(new FileWriter(path)));
+			print.println(search);
+			print.close();
+
+			//Préparation de l'API SendInBlue
 			TransactionalEmailsApi api = new TransactionalEmailsApi();
 			SendSmtpEmailSender sender = new SendSmtpEmailSender();
 
@@ -38,11 +51,14 @@ public class Mail {
 			replyTo.setName("Camille");
 
 			SendSmtpEmailAttachment attachment = new SendSmtpEmailAttachment();
-			attachment.setName("resultat.txt");
-			byte[] encode = Files.readAllBytes(Paths.get(files.toURI()));
+			attachment.setName("test.txt");
+			byte[] encode = Files.readAllBytes(Paths.get("recherches/test.txt"));
 			attachment.setContent(encode);
 			List<SendSmtpEmailAttachment> attachmentList = new ArrayList<SendSmtpEmailAttachment>();
 			attachmentList.add(attachment);
+
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/uuuu");
+			LocalDate localDate = LocalDate.now();
 
 			SendSmtpEmail sendSmtpEmail = new SendSmtpEmail();
 			sendSmtpEmail.setSender(sender);
@@ -51,10 +67,10 @@ public class Mail {
 			sendSmtpEmail.setHtmlContent(
 							"<html>" +
 											"<body>" +
-											"<h1>Ceci est un titre d'un mail</h1>" +
-											"<p>Ceci est un contenu de mail</p>" +
+											"<h1>Votre recherche du " + dtf.format(localDate) + " sur notre logiciel</h1>" +
+											"<p>Vous trouverez ci joint votre recherche faites sur notre logiciel de scrapping. Vous pouvez également retrouver certains de ces articles sur notre boutique : <a href='bestmusic.camilledebusscher.tech'>bestmusic.camilledebusscher.tech</a></p>" +
 											"</body>" +
-											"</html>"
+							"</html>"
 			);
 
 			sendSmtpEmail.setSubject("Résultats de la demande - ScrapCamille");

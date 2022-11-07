@@ -11,7 +11,7 @@ public class VinyleApplication extends Application {
 	@Override
 	public void start(Stage stage) throws IOException {
 		FXMLLoader fxmlLoader = new FXMLLoader(VinyleApplication.class.getResource("ihmAccueil.fxml"));
-		Scene scene = new Scene(fxmlLoader.load(), 748, 546);
+		Scene scene = new Scene(fxmlLoader.load(), 748, 750);
 		stage.setTitle("Scrapping");
 		stage.setScene(scene);
 		stage.show();

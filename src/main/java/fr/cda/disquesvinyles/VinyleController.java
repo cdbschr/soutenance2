@@ -1,9 +1,5 @@
 package fr.cda.disquesvinyles;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +12,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.util.List;
 
 public class VinyleController {
 	@FXML
@@ -46,30 +41,113 @@ public class VinyleController {
 	@FXML
 	private Button closeDb;
 	@FXML
+	private ProgressBar searchBar;
+	@FXML
 	private TextArea showResult;
 
-	File resultFile = new File("result.txt");
-
+	//fonction de recherche au clic sur le bouton "Rechercher"
 	@FXML
 	protected void onClickSearch() {
 		//TODO function recuperation des infos saisies
 		String searchTitle = title.getText();
-		String categorie = category.getValue();
-		String searchDate = pickDate.getValue()
-						.toString()
-						.substring(0, 4);
+
+		String searchCategory = category.getValue();
+		searchCategory = searchCategory != null ? searchCategory : "";
+
+		String searchDate = "";
+		if (pickDate.getValue() == null) {
+			showResult.setText("Veuillez saisir une date avant d'effectuer une recherche");
+		}
+		searchDate = Integer.toString(pickDate.getValue().getYear());
+
 		String searchPriceMin = priceMin.getText();
+		searchPriceMin = searchPriceMin != null ? searchPriceMin : "";
 		String searchPriceMax = priceMax.getText();
-		boolean searchDiscogs = discogs.isSelected();
-		boolean searchFnac = fnac.isSelected();
-		boolean searchVinylCorner = vinylcorner.isSelected();
-		boolean searchLeboncoin = leboncoin.isSelected();
-		boolean searchMesVinyles = mesvinyles.isSelected();
-		boolean searchCultureFactory = culturefactory.isSelected();
+		searchPriceMax = searchPriceMax != null ? searchPriceMax : "";
 
-		//TODO function make crawl on website
+		if (discogs.isSelected()) {
+			searchBar.setProgress(0);
+			try {
+				String res = Scrapper.scrapDiscogs(searchTitle, searchCategory, searchDate, searchPriceMin, searchPriceMax);
+				System.out.println("result = " + res);
+				showResult.setText(res);
+			} catch (IOException e) {
+				e.printStackTrace();
+				String result = "Une erreur est survenue, merci de réessayer plus tard";
+				showResult.setText(result);
+			}
+			searchBar.setProgress(1);
+		}
 
-		//TODO function afficher le résultat
+		if (fnac.isSelected()) {
+			searchBar.setProgress(0);
+			try {
+				String res = Scrapper.scrapFnac(searchTitle, searchDate, searchPriceMin, searchPriceMax);
+				System.out.println("result = " + res);
+				showResult.setText(res);
+			} catch (IOException e) {
+				e.printStackTrace();
+				String result = "Une erreur est survenue, merci de réessayer plus tard";
+				showResult.setText(result);
+			}
+			searchBar.setProgress(1);
+		}
+
+		if (vinylcorner.isSelected()) {
+			searchBar.setProgress(0);
+			try {
+				String res = Scrapper.scrapVinylCorner(searchTitle, searchCategory, searchDate, searchPriceMin, searchPriceMax);
+				System.out.println("result = " + res);
+				showResult.setText(res);
+			} catch (IOException e) {
+				e.printStackTrace();
+				String result = "Une erreur est survenue, merci de réessayer plus tard";
+				showResult.setText(result);
+			}
+			searchBar.setProgress(1);
+		}
+
+		if (leboncoin.isSelected()) {
+			searchBar.setProgress(0);
+			try {
+				String res = Scrapper.scrapLeboncoin(searchTitle, searchPriceMin, searchPriceMax);
+				System.out.println("result = " + res);
+				showResult.setText(res);
+			} catch (IOException e) {
+				e.printStackTrace();
+				String result = "Une erreur est survenue, merci de réessayer plus tard";
+				showResult.setText(result);
+			}
+			searchBar.setProgress(1);
+		}
+
+		if (mesvinyles.isSelected()) {
+			searchBar.setProgress(0);
+			try {
+				String res = Scrapper.scrapMesVinyles(searchTitle, searchDate, searchPriceMin, searchPriceMax);
+				System.out.println("result = " + res);
+				showResult.setText(res);
+			} catch (IOException e) {
+				e.printStackTrace();
+				String result = "Une erreur est survenue, merci de réessayer plus tard";
+				showResult.setText(result);
+			}
+			searchBar.setProgress(1);
+		}
+
+		if (culturefactory.isSelected()) {
+			searchBar.setProgress(0);
+			try {
+				String res = Scrapper.scrapCultureFactory(searchTitle, searchCategory, searchPriceMin, searchPriceMax);
+				System.out.println("result = " + res);
+				showResult.setText(res);
+			} catch (IOException e) {
+				e.printStackTrace();
+				String result = "Une erreur est survenue, merci de réessayer plus tard";
+				showResult.setText(result);
+			}
+			searchBar.setProgress(1);
+		}
 	}
 
 	//Actions des boutons dans le home
@@ -89,6 +167,7 @@ public class VinyleController {
 		culturefactory.setSelected(false);
 	}
 
+	//Réinitialise la ComboBox
 	public void refreshComboBox() {
 		category.setButtonCell(new ListCell<>() {
 			@Override
@@ -117,7 +196,7 @@ public class VinyleController {
 				FileChooser.ExtensionFilter extFilter =
 								new FileChooser.ExtensionFilter("TEXT files (*.txt)", "*.txt");
 				fileChooser.getExtensionFilters().add(extFilter);
-				fileChooser.setInitialDirectory(new File("scrap"));
+				fileChooser.setInitialDirectory(new File("./recherches/"));
 				fileChooser.setTitle("");
 				File selectedFile = fileChooser.showSaveDialog(null);
 				String path = selectedFile.getAbsolutePath();
@@ -133,6 +212,7 @@ public class VinyleController {
 		}
 	}
 
+	//affichage modal pour les Mails
 	public void modalMail() throws IOException {
 		Stage modal = new Stage();
 
@@ -145,11 +225,9 @@ public class VinyleController {
 		Button button1 = new Button("Envoyer");
 		Button button2 = new Button("Fermer");
 
-		//TODO récupérer valeur du scrap
-		//TODO récupérer valeur du Textfield
-		//TODO envoyer par email
 		button1.setOnAction(e ->
-						Mail.send(tf1.getText(), resultFile));
+							Mail.send(tf1.getText(), showResult.getText()));
+
 		button2.setOnAction(e -> modal.close());
 
 		VBox layout = new VBox(15);
@@ -160,6 +238,7 @@ public class VinyleController {
 		modal.showAndWait();
 	}
 
+	//affichage de la modal pour la sauvegarde de données
 	public void modalSaveDb() throws IOException {
 		Stage modal = new Stage();
 
@@ -171,6 +250,9 @@ public class VinyleController {
 		Button button2 = new Button("Fermer");
 
 		//TODO récupérer les valeurs du scrapping
+
+		//TODO récupérer les valeurs entrées dans la fenêtre ihmBDD
+
 		//TODO faire une boucle avec l'envoi des informations dans la base de données via des requêtes
 
 		button2.setOnAction(e -> modal.close());
@@ -183,17 +265,20 @@ public class VinyleController {
 		modal.showAndWait();
 	}
 
+	//ferme le software
 	@FXML
 	protected void onCloseClick() {
 		Platform.exit();
 	}
 
+	//ferme les modals
 	@FXML
 	protected void onClickCloseScene() {
 		Stage stage = (Stage) closeDb.getScene().getWindow();
 		stage.close();
 	}
 
+	//Page pour la base de données
 	public void DbPage() throws IOException {
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -205,54 +290,6 @@ public class VinyleController {
 			stage.setTitle("Paramètres de la base de données");
 			stage.setScene(scene);
 			stage.show();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void ScrapLeboncoin(String searchTitle, String searchPriceMin, String searchPriceMax) {
-		String url = "https://leboncoin.fr/recherche?category=26&text=" + searchTitle + "&price=" + searchPriceMin + "-" + searchPriceMax;
-
-		try {
-			WebClient webClient = new WebClient();
-
-			webClient.getOptions().setUseInsecureSSL(true);
-			webClient.getOptions().setCssEnabled(false);
-			webClient.getOptions().setJavaScriptEnabled(false);
-			HtmlPage htmlPage = webClient.getPage(url);
-
-			List<HtmlElement> li = htmlPage.getByXPath("//div[1]/div[1]/p");
-
-			String res = "";
-			for (HtmlElement e : li) {
-				HtmlPage htmlPage1 = webClient.getPage(e.click().getUrl());
-				String nomArticle = "";
-				String prixArticle = "";
-				String description = "";
-
-				List<HtmlElement> nom = htmlPage1.getByXPath("//h1[@data-qa-id='adview_title']");
-				List<HtmlElement> prix = htmlPage1.getByXPath("//span[@class='Roh2X _3gP8T _35DXM _25LNb']");
-				List<HtmlElement> desc = htmlPage1.getByXPath("//p[@class='sc-bhlBdH gOkeRT']");
-
-				for (HtmlElement n : nom) {
-					nomArticle = n.getTextContent();
-
-				}
-				for (HtmlElement p : prix) {
-					prixArticle = p.getTextContent();
-					prixArticle = prixArticle.replace("\u00a0", "");
-				}
-				for (HtmlElement d : desc) {
-					description = d.getTextContent();
-				}
-
-				res += "Article : " + nomArticle +
-								"\n Prix : " + prixArticle +
-								"\n Description de l'article : " + description +
-								"\n Lien : " + htmlPage1.getUrl() +
-								"\n--------------------------------------------------------------------\n";
-			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
