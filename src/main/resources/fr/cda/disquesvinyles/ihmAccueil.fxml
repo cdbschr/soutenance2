@@ -99,9 +99,6 @@
                        promptText="Prix max" fx:id="priceMax"/>
           </children>
         </Group>
-        <Button layoutX="139.0" layoutY="241.0" mnemonicParsing="false" text="Rechercher" onAction="#onClickSearch" fx:id="search"/>
-        <Button layoutX="243.0" layoutY="241.0" mnemonicParsing="false" onAction="#onClickClear" text="Effacer"
-                fx:id="clear"/>
         <Group layoutX="515.0" layoutY="56.0">
           <children>
             <CheckBox mnemonicParsing="false" text="Discogs.com" fx:id="discogs"/>
@@ -113,11 +110,14 @@
                       fx:id="culturefactory"/>
           </children>
         </Group>
+        <Button layoutX="139.0" layoutY="241.0" mnemonicParsing="false" text="Rechercher" onAction="#onClickSearch" fx:id="search"/>
+        <Button layoutX="243.0" layoutY="241.0" mnemonicParsing="false" onAction="#onClickClear" text="Effacer"
+                fx:id="clear"/>
       </children>
     </AnchorPane>
     <ProgressBar prefHeight="20.0" prefWidth="750.0" progress="0.0"/>
     <ScrollPane prefHeight="400.0" prefWidth="750.0">
-      <TextArea fx:id="showResult" prefHeight="500.0" prefWidth="730.0" />
+      <TextArea fx:id="showResult" editable="false" prefHeight="500.0" prefWidth="730.0" />
     </ScrollPane>
   </children>
 </VBox>

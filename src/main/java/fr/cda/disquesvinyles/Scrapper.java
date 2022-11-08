@@ -26,7 +26,7 @@ public class Scrapper {
 			URL pageArticleUrl = pageArticle.getUrl();
 
 			List<HtmlElement> date = pageArticle.getByXPath("//table/tbody/tr[3]/td/a/time");
-			List<HtmlElement> price = pageArticle.getByXPath("//div[2]/div[1]/div[11/section/header/div/span/span");
+			List<HtmlElement> price = pageArticle.getByXPath("//div[2]/div[1]/div[11]/section/header/div/span/span");
 			List<HtmlElement> desc = pageArticle.getByXPath("//div[2]/div[1]/div[5]/section/div/div");
 
 			for (HtmlElement d : date) {
@@ -34,16 +34,22 @@ public class Scrapper {
 
 				if (Integer.parseInt(year) >= Integer.parseInt(searchDate)) {
 					for (HtmlElement p : price) {
-						String priceArticle = p.getTextContent();
+						String priceArticle = p.getTextContent()
+										.replace("€", "")
+										.replace(",", ".")
+										.substring(0, 4);
 
 						if ((Double.parseDouble(priceArticle) <= Double.parseDouble(searchPriceMax)) && (Double.parseDouble(priceArticle) >= Double.parseDouble(searchPriceMin))) {
-							String descArticle = desc.get(0).getTextContent();
-							res += "Titre : " + title + '\n' +
-											"Prix : " + priceArticle + " €" + '\n' +
-											"Description : \n" + descArticle + '\n' +
-											"Lien : " + pageArticleUrl + '\n' +
-											"=============================================================" + '\n';
+							for (HtmlElement descArt : desc) {
+								String descArticle = descArt.getTextContent();
+								res += "Titre : " + title + '\n' +
+												"Prix : " + priceArticle + " €" + '\n' +
+												"Description : \n" + descArticle + '\n' +
+												"Lien : " + pageArticleUrl + '\n' +
+												"=============================================================" + '\n';
+							}
 						}
+
 					}
 				}
 			}
@@ -66,7 +72,7 @@ public class Scrapper {
 		webClient.getOptions().setJavaScriptEnabled(false);
 		HtmlPage htmlPage = webClient.getPage(url);
 
-		List<HtmlAnchor> article = htmlPage.getByXPath("//article/form/div[2]/div/p[1/span/a");
+		List<HtmlAnchor> article = htmlPage.getByXPath("//article/form/div[2]/div/p[1]/span/a");
 
 		for (HtmlElement a : article) {
 			String title = a.getTextContent();
@@ -81,20 +87,26 @@ public class Scrapper {
 							.replaceAll("[^0-9]", "");
 
 			if (Integer.parseInt(year) >= Integer.parseInt(searchDate)) {
-				String priceArticle = price.get(0).getTextContent();
+				for (HtmlElement p : price) {
+					String priceArticle = p.getTextContent()
+									.replace("€", "")
+									.replace(",", ".");
 
-				if ((Double.parseDouble(priceArticle) <= Double.parseDouble(searchPriceMax)) && (Double.parseDouble(priceArticle) >= Double.parseDouble(searchPriceMin))) {
-					String descArticle = desc.get(0).getTextContent();
-					res += "Titre : " + title + '\n' +
-									"Prix : " + priceArticle + " €" + '\n' +
-									"Description : \n" + descArticle + '\n' +
-									"Lien : " + pageArticleUrl + '\n' +
-									"=============================================================" + '\n';
+					if ((Double.parseDouble(priceArticle) <= Double.parseDouble(searchPriceMax)) && (Double.parseDouble(priceArticle) >= Double.parseDouble(searchPriceMin))) {
+						for (HtmlElement descArt : desc) {
+							String descArticle = descArt.getTextContent();
+							res += "Titre : " + title + '\n' +
+											"Prix : " + priceArticle + " €" + '\n' +
+											"Description : \n" + descArticle + '\n' +
+											"Lien : " + pageArticleUrl + '\n' +
+											"=============================================================" + '\n';
+						}
+					}
 				}
 			}
-		}
-		if (res.equals("")) {
-			res = "Pas de résultats trouvés sur Fnac, veuillez réessayer afin d'avoir des résultats.";
+			if (res.equals("")) {
+				res = "Pas de résultats trouvés sur Fnac, veuillez réessayer afin d'avoir des résultats.";
+			}
 		}
 		return res;
 	}
@@ -160,7 +172,7 @@ public class Scrapper {
 		webClient.getOptions().setJavaScriptEnabled(false);
 		HtmlPage htmlPage = webClient.getPage(url);
 
-		List<HtmlElement> article = htmlPage.getByXPath("//p");
+		List<HtmlElement> article = htmlPage.getByXPath("//a/div[2]/div[2]/div[1]/p");
 		for (HtmlElement a : article) {
 			String title = a.getTextContent();
 			HtmlPage pageArticle = webClient.getPage(a.click().getUrl());
@@ -175,7 +187,7 @@ public class Scrapper {
 					String descArticle = d.getTextContent();
 
 					res += "Titre : " + title + '\n' +
-									"Prix : " + priceArticle + " €" + '\n' +
+									"Prix : " + priceArticle + '\n' +
 									"Description : \n" + descArticle + '\n' +
 									"Lien : " + pageArticleURL + '\n' +
 									"=============================================================" + '\n';
@@ -251,22 +263,25 @@ public class Scrapper {
 			if (a.getTextContent().contains(searchTitle)) {
 				if (a.getTextContent().toLowerCase().contains("cd") || a.getTextContent().toLowerCase().contains("vinyl")) {
 					HtmlPage pageArticle = a.click();
-					String priceArticle = ((HtmlSpan) pageArticle.getByXPath("//span[@class='price']").get(0)).getTextContent();
-					priceArticle = priceArticle.replace("€", "")
-									.replace("\u00a0", "")
-									.replace(",", ".")
-									.replaceAll("\\s+", "");
+					URL pageArticleUrl = pageArticle.getUrl();
+					List<HtmlElement> price = pageArticle.getByXPath("//span[@class='price']");
+					for(HtmlElement p : price) {
+						String priceArticle = p.getTextContent();
+						priceArticle = priceArticle.replace("€", "")
+										.replace("\u00a0", "")
+										.replace(",", ".")
+										.replaceAll("\\s+", "");
+						if (Double.parseDouble(searchPriceMin) <= Double.parseDouble(priceArticle) && Double.parseDouble(priceArticle) <= Double.parseDouble(searchPriceMax)) {
+							String value = ((HtmlHeading1) pageArticle.getByXPath("//h1[@class='h1 name_details']").get(0)).getTextContent();
+							List<HtmlElement> description = pageArticle.getByXPath("//div[@class='product-description']");
 
-					if (Double.parseDouble(searchPriceMin) <= Double.parseDouble(priceArticle) && Double.parseDouble(priceArticle) <= Double.parseDouble(searchPriceMax)) {
-						String value = ((HtmlHeading1) pageArticle.getByXPath("//h1[@class='h1 name_details']").get(0)).getTextContent();
-						List<HtmlElement> description = pageArticle.getByXPath("//div[@class='product-description']");
-
-						for (HtmlElement d : description) {
-							res += "Titre : " + value + '\n' +
-											"Prix : " + priceArticle + " €" + '\n' +
-											"Description : " + d.getTextContent() + '\n' +
-											"Lien : " + pageArticle.getUrl() + '\n' +
-											"=============================================================" + '\n';
+							for (HtmlElement d : description) {
+								res += "Titre : " + value + '\n' +
+												"Prix : " + priceArticle + " €" + '\n' +
+												"Description : " + d.getTextContent() + '\n' +
+												"Lien : " + pageArticle.getUrl() + '\n' +
+												"=============================================================" + '\n';
+							}
 						}
 					}
 				}

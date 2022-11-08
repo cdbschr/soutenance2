@@ -1,4 +1,5 @@
 package fr.cda.disquesvinyles;
 
-public class BddController {
+public class DbController {
+
 }

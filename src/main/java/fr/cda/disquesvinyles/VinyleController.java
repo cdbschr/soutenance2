@@ -66,7 +66,6 @@ public class VinyleController {
 		searchPriceMax = searchPriceMax != null ? searchPriceMax : "";
 
 		if (discogs.isSelected()) {
-			searchBar.setProgress(0);
 			try {
 				String res = Scrapper.scrapDiscogs(searchTitle, searchCategory, searchDate, searchPriceMin, searchPriceMax);
 				System.out.println("result = " + res);
@@ -76,11 +75,9 @@ public class VinyleController {
 				String result = "Une erreur est survenue, merci de réessayer plus tard";
 				showResult.setText(result);
 			}
-			searchBar.setProgress(1);
 		}
 
 		if (fnac.isSelected()) {
-			searchBar.setProgress(0);
 			try {
 				String res = Scrapper.scrapFnac(searchTitle, searchDate, searchPriceMin, searchPriceMax);
 				System.out.println("result = " + res);
@@ -90,11 +87,9 @@ public class VinyleController {
 				String result = "Une erreur est survenue, merci de réessayer plus tard";
 				showResult.setText(result);
 			}
-			searchBar.setProgress(1);
 		}
 
 		if (vinylcorner.isSelected()) {
-			searchBar.setProgress(0);
 			try {
 				String res = Scrapper.scrapVinylCorner(searchTitle, searchCategory, searchDate, searchPriceMin, searchPriceMax);
 				System.out.println("result = " + res);
@@ -104,11 +99,9 @@ public class VinyleController {
 				String result = "Une erreur est survenue, merci de réessayer plus tard";
 				showResult.setText(result);
 			}
-			searchBar.setProgress(1);
 		}
 
 		if (leboncoin.isSelected()) {
-			searchBar.setProgress(0);
 			try {
 				String res = Scrapper.scrapLeboncoin(searchTitle, searchPriceMin, searchPriceMax);
 				System.out.println("result = " + res);
@@ -118,11 +111,9 @@ public class VinyleController {
 				String result = "Une erreur est survenue, merci de réessayer plus tard";
 				showResult.setText(result);
 			}
-			searchBar.setProgress(1);
 		}
 
 		if (mesvinyles.isSelected()) {
-			searchBar.setProgress(0);
 			try {
 				String res = Scrapper.scrapMesVinyles(searchTitle, searchDate, searchPriceMin, searchPriceMax);
 				System.out.println("result = " + res);
@@ -132,11 +123,9 @@ public class VinyleController {
 				String result = "Une erreur est survenue, merci de réessayer plus tard";
 				showResult.setText(result);
 			}
-			searchBar.setProgress(1);
 		}
 
 		if (culturefactory.isSelected()) {
-			searchBar.setProgress(0);
 			try {
 				String res = Scrapper.scrapCultureFactory(searchTitle, searchCategory, searchPriceMin, searchPriceMax);
 				System.out.println("result = " + res);
@@ -146,7 +135,6 @@ public class VinyleController {
 				String result = "Une erreur est survenue, merci de réessayer plus tard";
 				showResult.setText(result);
 			}
-			searchBar.setProgress(1);
 		}
 	}
 
@@ -225,8 +213,10 @@ public class VinyleController {
 		Button button1 = new Button("Envoyer");
 		Button button2 = new Button("Fermer");
 
-		button1.setOnAction(e ->
-							Mail.send(tf1.getText(), showResult.getText()));
+		button1.setOnAction(e -> {
+							Mail.send(tf1.getText(), showResult.getText());
+							modal.close();
+						});
 
 		button2.setOnAction(e -> modal.close());
 
