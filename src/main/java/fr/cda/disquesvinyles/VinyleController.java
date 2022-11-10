@@ -408,11 +408,10 @@ public class VinyleController {
 	 */
 	public void saveDb(String title, String desc, String price, int category, String year) {
 		Dotenv dotenv = Dotenv.load();
-		final String INSERT_SQL = "INSERT INTO recherche (titre, description, prix, genre, description) VALUES (?, ?, ?, ?, ?)";
 
 		try (Connection connexion = DriverManager.getConnection(
 						"jdbc:mysql://" + dotenv.get("DB_HOST") + ":" + dotenv.get("DB_PORT") + "/" + dotenv.get("DB_NAME"), dotenv.get("DB_USER"), dotenv.get("DB_PASSWORD"));
-				 PreparedStatement preparedStatement = connexion.prepareStatement(INSERT_SQL)) {
+				 PreparedStatement preparedStatement = connexion.prepareStatement("INSERT INTO recherche (titre, description, prix, genre, description) VALUES (?, ?, ?, ?, ?)")) {
 			preparedStatement.setString(1, title);
 			preparedStatement.setString(2, desc);
 			preparedStatement.setString(3, price);
@@ -452,5 +451,40 @@ public class VinyleController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Mode d'emploi for users
+	 */
+	public void onClickManual() throws IOException {
+		File manual = new File("manual.txt");
+		String line;
+		String res = "";
+
+		Stage popupwindow=new Stage();
+		popupwindow.initModality(Modality.APPLICATION_MODAL);
+		popupwindow.setTitle("Mode d'emploi");
+		TextArea ta = new TextArea();
+		ta.setPrefWidth(1000);
+		ta.setPrefHeight(515);
+
+		FileReader fr = new FileReader(manual);
+		BufferedReader br = new BufferedReader(fr);
+
+		while((line = br.readLine()) != null)
+		{
+			res += line +"\n";
+		}
+
+		fr.close();
+		ta.setText(res);
+		ta.setEditable(false);
+
+		VBox layout= new VBox(8);
+		layout.getChildren().addAll(ta);
+		layout.setAlignment(Pos.CENTER);
+		Scene scene1= new Scene(layout, 1000, 515);
+		popupwindow.setScene(scene1);
+		popupwindow.showAndWait();
 	}
 }
