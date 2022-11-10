@@ -1,0 +1,35 @@
+L'application de Scrapping, vous permet de faire des recherches sur des auteurs, des albums ou des titres spécifiques sur différents sites.
+
+
+--- Sommaire : ---
+
+1/ Faire une recherche
+2/ Enregistrer dans un fichier
+3/ Envoyer votre recherche par mail
+4/ Envoyer votre recherche dans une base de données (WIP)
+
+
+--- 1/ Faire une recherche ---
+Pour executer une recherche, vous devez saisir un nom d'artiste / d'album / titre et sélectionner un site.
+Vous avez différents paramètres de recherche disponibles pour vous faciliter la recherche :
+
+ - Le genre, 7 genres de musique sont disponibles : Rock, Blues, Jazz, Reggae, Funk, Electro, Dubstep, Soul.
+ - La date, la date de sortie de la musique / de l'album
+ - Le prix, vous pourrez voir suivant votre budget
+
+Après cela cliquez sur rechercher pour lancer la recherche et donc afficher suite a cela vos résultats.
+Si vous vous trompez dans votre recherche, vous pouvez cliquer sur "Effacer" pour recommencer une nouvelle recherche.
+
+
+--- 2/ Enregistrer dans un fichier ---
+Suite à votre recherche, vous pouvez enregistrer cette dernière au format texte.
+Vous pouvez enregistrer ce fichier où vous voulez, si vous souhaitez l'envoyer par mail, il faudra qu'il s'appelle "test.txt".
+
+
+--- 3/ Envoyer votre recherche par mail ---
+Suite à votre recherche, vous pouvez envoyer cette dernière par email à qui vous voulez.
+Assurez-vous d'avoir une connexion internet et d'avoir un email valide.
+
+
+--- 4/ Envoyer vos résultats dans une base de données (WIP) ---
+Fonctionnalité en cours de développement, elle permettra d'envoyer vos résultats dans une base de données afin de les stocker.
