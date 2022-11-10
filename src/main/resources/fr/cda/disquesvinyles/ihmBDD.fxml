@@ -26,31 +26,31 @@
             <Group layoutX="230.0" layoutY="98.0">
                <children>
                   <Text layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du serveur :" />
-                  <TextField layoutX="121.0" layoutY="-12.0" prefHeight="26.0" prefWidth="193.0" promptText="Nom d'host ou adresse IP" />
+                  <TextField layoutX="121.0" layoutY="-12.0" prefHeight="26.0" prefWidth="193.0" fx:id="ipServer" promptText="Nom d'host ou adresse IP" />
                </children>
             </Group>
             <Group layoutX="229.0" layoutY="141.0">
                <children>
-                  <Text layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom de la BDD :" />
-                  <TextField layoutX="121.0" layoutY="-12.0" prefHeight="26.0" prefWidth="194.0" promptText="Nom de la Base de données" />
+                  <Text layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0"  text="Nom de la BDD :" />
+                  <TextField layoutX="121.0" layoutY="-12.0" prefHeight="26.0" prefWidth="194.0" fx:id="dbName" promptText="Nom de la Base de données" />
                </children>
             </Group>
             <Group layoutX="228.0" layoutY="184.0">
                <children>
                   <Text layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Numéro de Port de la BDD : " />
-                  <TextField layoutX="171.0" layoutY="-11.0" prefHeight="26.0" prefWidth="145.0" promptText="ex: 3306" />
+                  <TextField layoutX="171.0" layoutY="-11.0" prefHeight="26.0" prefWidth="145.0" fx:id="portNumber" promptText="ex: 3306" />
                </children>
             </Group>
             <Group layoutX="229.0" layoutY="229.0">
                <children>
                   <Text layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login Utilisateur :" />
-                  <TextField layoutX="121.0" layoutY="-12.0" prefHeight="26.0" prefWidth="194.0" promptText="Nom du login utilisateur" />
+                  <TextField layoutX="121.0" layoutY="-12.0" prefHeight="26.0" prefWidth="194.0" fx:id="userLog" promptText="Nom du login utilisateur" />
                </children>
             </Group>
             <Group layoutX="229.0" layoutY="270.0">
                <children>
                   <Text layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password Utilisateur :" />
-                  <TextField layoutX="121.0" layoutY="-12.0" prefHeight="26.0" prefWidth="194.0" promptText="Mot de passe utilisateur" />
+                  <TextField layoutX="121.0" layoutY="-12.0" prefHeight="26.0" prefWidth="194.0" fx:id="userPwd" promptText="Mot de passe utilisateur" />
                </children>
             </Group>
             <Button layoutX="307.0" layoutY="320.0" mnemonicParsing="false" text="Valider" />

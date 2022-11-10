@@ -17,7 +17,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Mail.
+ */
 public class Mail {
+	/**
+	 * Send.
+	 *
+	 * @param recipient the recipient
+	 * @param search    the search
+	 */
 	public static void send(String recipient, String search) {
 		Dotenv dotenv = Dotenv.load();
 

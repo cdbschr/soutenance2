@@ -7,7 +7,23 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import static fr.cda.disquesvinyles.VinyleController.articles;
+
+/**
+ * The type Scrapper.
+ */
 public class Scrapper {
+	/**
+	 * Scrap discogs string.
+	 *
+	 * @param searchTitle    the search title
+	 * @param searchCategory the search category
+	 * @param searchDate     the search date
+	 * @param searchPriceMin the search price min
+	 * @param searchPriceMax the search price max
+	 * @return the string
+	 * @throws IOException the io exception
+	 */
 	public static String scrapDiscogs(String searchTitle, String searchCategory, String searchDate, String searchPriceMin, String searchPriceMax) throws IOException {
 		String url = "https://www.discogs.com/fr/search/?q=" + searchTitle + "&type=master&genre_exact=" + searchCategory;
 		String res = "";
@@ -47,19 +63,28 @@ public class Scrapper {
 												"Description : \n" + descArticle + '\n' +
 												"Lien : " + pageArticleUrl + '\n' +
 												"=============================================================" + '\n';
+
+								Article newArticle = new Article(title, searchCategory, year, descArticle, priceArticle, pageArticleUrl);
+								articles.add(newArticle);
 							}
 						}
-
 					}
 				}
 			}
 		}
-		if (res.equals("")) {
-			res = "Pas de résultats trouvés sur Discogs, veuillez réessayer afin d'avoir des résultats.";
-		}
 		return res;
 	}
 
+	/**
+	 * Scrap fnac string.
+	 *
+	 * @param searchTitle    the search title
+	 * @param searchDate     the search date
+	 * @param searchPriceMin the search price min
+	 * @param searchPriceMax the search price max
+	 * @return the string
+	 * @throws IOException the io exception
+	 */
 	public static String scrapFnac(String searchTitle, String searchDate, String searchPriceMin, String searchPriceMax) throws IOException {
 		String url = "https://www.fnac.com/SearchResult/ResultList.aspx?SCat=3!1&SDM=list&Search=" + searchTitle;
 
@@ -100,17 +125,28 @@ public class Scrapper {
 											"Description : \n" + descArticle + '\n' +
 											"Lien : " + pageArticleUrl + '\n' +
 											"=============================================================" + '\n';
+
+							Article newArticle = new Article(title, "", year, descArticle, priceArticle, pageArticleUrl);
+							articles.add(newArticle);
 						}
 					}
 				}
-			}
-			if (res.equals("")) {
-				res = "Pas de résultats trouvés sur Fnac, veuillez réessayer afin d'avoir des résultats.";
 			}
 		}
 		return res;
 	}
 
+	/**
+	 * Scrap vinyl corner string.
+	 *
+	 * @param searchTitle    the search title
+	 * @param searchCategory the search category
+	 * @param searchDate     the search date
+	 * @param searchPriceMin the search price min
+	 * @param searchPriceMax the search price max
+	 * @return the string
+	 * @throws IOException the io exception
+	 */
 	public static String scrapVinylCorner(String searchTitle, String searchCategory, String searchDate, String searchPriceMin, String searchPriceMax) throws IOException {
 		String url = "https://www.vinylcorner.fr/recherche?controller=search&s=" + searchTitle + "+" + searchCategory;
 		String res = "";
@@ -146,17 +182,26 @@ public class Scrapper {
 											"Description : \n" + descArticle + '\n' +
 											"Lien : " + pageArticleUrl + '\n' +
 											"=============================================================" + '\n';
+
+							Article newArticle = new Article(title, searchCategory, year, descArticle, priceArticle, pageArticleUrl);
+							articles.add(newArticle);
 						}
 					}
 				}
 			}
 		}
-		if (res.equals("")) {
-			res = "Pas de résultats trouvés sur VinylCorner, veuillez réessayer afin d'avoir des résultats.";
-		}
 		return res;
 	}
 
+	/**
+	 * Scrap leboncoin string.
+	 *
+	 * @param searchTitle    the search title
+	 * @param searchPriceMin the search price min
+	 * @param searchPriceMax the search price max
+	 * @return the string
+	 * @throws IOException the io exception
+	 */
 	public static String scrapLeboncoin(String searchTitle, String searchPriceMin, String searchPriceMax) throws IOException {
 		if (searchTitle.contains(" ")) {
 			searchTitle = searchTitle.replace(" ", "%20");
@@ -191,16 +236,25 @@ public class Scrapper {
 									"Description : \n" + descArticle + '\n' +
 									"Lien : " + pageArticleURL + '\n' +
 									"=============================================================" + '\n';
+
+					Article newArticle = new Article(title, "", "", descArticle, priceArticle, pageArticleURL);
+					articles.add(newArticle);
 				}
 			}
-
-		}
-		if (res.equals("")) {
-			res = "Pas de résultats trouvés sur Leboncoin, veuillez réessayer afin d'avoir des résultats.";
 		}
 		return res;
 	}
 
+	/**
+	 * Scrap mes vinyles string.
+	 *
+	 * @param searchTitle    the search title
+	 * @param searchDate     the search date
+	 * @param searchPriceMin the search price min
+	 * @param searchPriceMax the search price max
+	 * @return the string
+	 * @throws IOException the io exception
+	 */
 	public static String scrapMesVinyles(String searchTitle, String searchDate, String searchPriceMin, String searchPriceMax) throws IOException {
 		String url = "https://mesvinyles.fr/fr/recherche?controller=search&s=" + searchTitle;
 		String res = "";
@@ -227,25 +281,37 @@ public class Scrapper {
 
 				if (Integer.parseInt(year) >= Integer.parseInt(searchDate)) {
 					for (HtmlElement p : price) {
-						String priceArticle = p.getTextContent();
+						String priceArticle = p.getTextContent()
+										.replace("€", "")
+										.replace(",", ".")
+										.substring(0, 4);
 
 						if ((Double.parseDouble(priceArticle) <= Double.parseDouble(searchPriceMax)) && (Double.parseDouble(priceArticle) >= Double.parseDouble(searchPriceMin))) {
 							res += "Titre : " + title + '\n' +
 											"Prix : " + priceArticle + " €" + '\n' +
 											"Lien : " + pageArticleUrl + '\n' +
 											"=============================================================" + '\n';
+
+							Article newArticle = new Article(title, "", year, "", priceArticle, pageArticleUrl);
+							articles.add(newArticle);
 						}
 					}
 				}
 			}
 		}
-
-		if (res.equals("")) {
-			res = "Pas de résultats trouvés sur MesVinyles, veuillez réessayer afin d'avoir des résultats.";
-		}
 		return res;
 	}
 
+	/**
+	 * Scrap culture factory string.
+	 *
+	 * @param searchTitle    the search title
+	 * @param searchCategory the search category
+	 * @param searchPriceMin the search price min
+	 * @param searchPriceMax the search price max
+	 * @return the string
+	 * @throws IOException the io exception
+	 */
 	public static String scrapCultureFactory(String searchTitle, String searchCategory, String searchPriceMin, String searchPriceMax) throws IOException {
 		String url = "https://culturefactory.fr/recherche?controller=search&s=" + searchTitle + " " + searchCategory;
 		String res = "";
@@ -281,14 +347,14 @@ public class Scrapper {
 												"Description : " + d.getTextContent() + '\n' +
 												"Lien : " + pageArticle.getUrl() + '\n' +
 												"=============================================================" + '\n';
+
+								Article newArticle = new Article(searchTitle, searchCategory, "", d.getTextContent(), priceArticle, pageArticleUrl);
+								articles.add(newArticle);
 							}
 						}
 					}
 				}
 			}
-		}
-		if (res.equals("")) {
-			res = "Pas de résultats trouvés sur CultureFactory, veuillez réessayer afin d'avoir des résultats.";
 		}
 		return res;
 	}

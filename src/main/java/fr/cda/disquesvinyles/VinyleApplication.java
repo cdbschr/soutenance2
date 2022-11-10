@@ -7,6 +7,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * The type Vinyle application.
+ */
 public class VinyleApplication extends Application {
 	@Override
 	public void start(Stage stage) throws IOException {
@@ -17,6 +20,11 @@ public class VinyleApplication extends Application {
 		stage.show();
 	}
 
+	/**
+	 * The entry point of application.
+	 *
+	 * @param args the input arguments
+	 */
 	public static void main(String[] args) {
 		launch();
 	}

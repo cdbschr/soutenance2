@@ -12,7 +12,18 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
+
+/**
+ * The type Vinyle controller.
+ */
 public class VinyleController {
 	@FXML
 	private TextField title;
@@ -45,7 +56,54 @@ public class VinyleController {
 	@FXML
 	private TextArea showResult;
 
-	//fonction de recherche au clic sur le bouton "Rechercher"
+	/**
+	 * The Ip server.
+	 */
+	@FXML
+	TextField ipServer;
+	/**
+	 * The Db name.
+	 */
+	@FXML
+	TextField dbName;
+	/**
+	 * The Port number.
+	 */
+	@FXML
+	TextField portNumber;
+	/**
+	 * The User log.
+	 */
+	@FXML
+	TextField userLog;
+	/**
+	 * The User pwd.
+	 */
+	@FXML
+	TextField userPwd;
+
+	/**
+	 * The constant articles.
+	 */
+	public static ArrayList<Article> articles = new ArrayList<Article>();
+
+	/**
+	 * Affiche article string.
+	 *
+	 * @return the string
+	 */
+	public String afficheArticle() {
+		String result = "";
+		for (Article article : articles) {
+			result += article.toString();
+		}
+		return result;
+	}
+
+	/**
+	 * On click search.
+	 */
+//fonction de recherche au clic sur le bouton "Rechercher"
 	@FXML
 	protected void onClickSearch() {
 		//TODO function recuperation des infos saisies
@@ -65,14 +123,15 @@ public class VinyleController {
 		String searchPriceMax = priceMax.getText();
 		searchPriceMax = searchPriceMax != null ? searchPriceMax : "";
 
+		String finalRes = "";
 		if (discogs.isSelected()) {
 			try {
 				String res = Scrapper.scrapDiscogs(searchTitle, searchCategory, searchDate, searchPriceMin, searchPriceMax);
 				System.out.println("result = " + res);
-				showResult.setText(res);
+				finalRes += res;
 			} catch (IOException e) {
 				e.printStackTrace();
-				String result = "Une erreur est survenue, merci de réessayer plus tard";
+				String result = "Une erreur est survenue sur Discogs, merci de réessayer plus tard";
 				showResult.setText(result);
 			}
 		}
@@ -81,10 +140,10 @@ public class VinyleController {
 			try {
 				String res = Scrapper.scrapFnac(searchTitle, searchDate, searchPriceMin, searchPriceMax);
 				System.out.println("result = " + res);
-				showResult.setText(res);
+				finalRes += res;
 			} catch (IOException e) {
 				e.printStackTrace();
-				String result = "Une erreur est survenue, merci de réessayer plus tard";
+				String result = "Une erreur est survenue sur Fnac, merci de réessayer plus tard";
 				showResult.setText(result);
 			}
 		}
@@ -93,10 +152,10 @@ public class VinyleController {
 			try {
 				String res = Scrapper.scrapVinylCorner(searchTitle, searchCategory, searchDate, searchPriceMin, searchPriceMax);
 				System.out.println("result = " + res);
-				showResult.setText(res);
+				finalRes += res;
 			} catch (IOException e) {
 				e.printStackTrace();
-				String result = "Une erreur est survenue, merci de réessayer plus tard";
+				String result = "Une erreur est survenue sur VinylCorner, merci de réessayer plus tard";
 				showResult.setText(result);
 			}
 		}
@@ -105,10 +164,10 @@ public class VinyleController {
 			try {
 				String res = Scrapper.scrapLeboncoin(searchTitle, searchPriceMin, searchPriceMax);
 				System.out.println("result = " + res);
-				showResult.setText(res);
+				finalRes += res;
 			} catch (IOException e) {
 				e.printStackTrace();
-				String result = "Une erreur est survenue, merci de réessayer plus tard";
+				String result = "Une erreur est survenue sur Leboncoin, merci de réessayer plus tard";
 				showResult.setText(result);
 			}
 		}
@@ -117,10 +176,10 @@ public class VinyleController {
 			try {
 				String res = Scrapper.scrapMesVinyles(searchTitle, searchDate, searchPriceMin, searchPriceMax);
 				System.out.println("result = " + res);
-				showResult.setText(res);
+				finalRes += res;
 			} catch (IOException e) {
 				e.printStackTrace();
-				String result = "Une erreur est survenue, merci de réessayer plus tard";
+				String result = "Une erreur est survenue sur MesVinyles, merci de réessayer plus tard";
 				showResult.setText(result);
 			}
 		}
@@ -129,16 +188,21 @@ public class VinyleController {
 			try {
 				String res = Scrapper.scrapCultureFactory(searchTitle, searchCategory, searchPriceMin, searchPriceMax);
 				System.out.println("result = " + res);
+				finalRes += res;
 				showResult.setText(res);
 			} catch (IOException e) {
 				e.printStackTrace();
-				String result = "Une erreur est survenue, merci de réessayer plus tard";
+				String result = "Une erreur est survenue sur CultureFactory, merci de réessayer plus tard";
 				showResult.setText(result);
 			}
 		}
+		showResult.setText(finalRes);
 	}
 
-	//Actions des boutons dans le home
+	/**
+	 * On click clear.
+	 */
+//Actions des boutons dans le home
 	@FXML
 	protected void onClickClear() {
 		title.setText("");
@@ -155,7 +219,10 @@ public class VinyleController {
 		culturefactory.setSelected(false);
 	}
 
-	//Réinitialise la ComboBox
+	/**
+	 * Refresh combo box.
+	 */
+//Réinitialise la ComboBox
 	public void refreshComboBox() {
 		category.setButtonCell(new ListCell<>() {
 			@Override
@@ -170,7 +237,12 @@ public class VinyleController {
 		});
 	}
 
-	//Actions du Menu Fichier
+	/**
+	 * Save file.
+	 *
+	 * @throws IOException the io exception
+	 */
+//Actions du Menu Fichier
 	@FXML
 	public void saveFile() throws IOException {
 		if (showResult.getText().equals("") || showResult.getText().equals("Veuiller lancer une recherche, pour afficher un résultat et lancer un enregistrement.")) {
@@ -200,7 +272,12 @@ public class VinyleController {
 		}
 	}
 
-	//affichage modal pour les Mails
+	/**
+	 * Modal mail.
+	 *
+	 * @throws IOException the io exception
+	 */
+//affichage modal pour les Mails
 	public void modalMail() throws IOException {
 		Stage modal = new Stage();
 
@@ -214,9 +291,9 @@ public class VinyleController {
 		Button button2 = new Button("Fermer");
 
 		button1.setOnAction(e -> {
-							Mail.send(tf1.getText(), showResult.getText());
-							modal.close();
-						});
+			Mail.send(tf1.getText(), showResult.getText());
+			modal.close();
+		});
 
 		button2.setOnAction(e -> modal.close());
 
@@ -228,7 +305,12 @@ public class VinyleController {
 		modal.showAndWait();
 	}
 
-	//affichage de la modal pour la sauvegarde de données
+	/**
+	 * Modal save db.
+	 *
+	 * @throws IOException the io exception
+	 */
+//affichage de la modal pour la sauvegarde de données
 	public void modalSaveDb() throws IOException {
 		Stage modal = new Stage();
 
@@ -239,12 +321,10 @@ public class VinyleController {
 		Button button1 = new Button("Valider");
 		Button button2 = new Button("Fermer");
 
-		//TODO récupérer les valeurs du scrapping
-
-		//TODO récupérer les valeurs entrées dans la fenêtre ihmBDD
-
-		//TODO faire une boucle avec l'envoi des informations dans la base de données via des requêtes
-
+		button1.setOnAction(e -> {
+			onClickSaveDb();
+			modal.close();
+		});
 		button2.setOnAction(e -> modal.close());
 
 		VBox layout = new VBox(15);
@@ -255,20 +335,31 @@ public class VinyleController {
 		modal.showAndWait();
 	}
 
-	//ferme le software
+	/**
+	 * On close click.
+	 */
+//ferme le software
 	@FXML
 	protected void onCloseClick() {
 		Platform.exit();
 	}
 
-	//ferme les modals
+	/**
+	 * On click close scene.
+	 */
+//ferme les modals
 	@FXML
 	protected void onClickCloseScene() {
 		Stage stage = (Stage) closeDb.getScene().getWindow();
 		stage.close();
 	}
 
-	//Page pour la base de données
+	/**
+	 * Db page.
+	 *
+	 * @throws IOException the io exception
+	 */
+//Page pour la base de données
 	public void DbPage() throws IOException {
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -282,6 +373,83 @@ public class VinyleController {
 			stage.show();
 
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Test db connexion.
+	 */
+	public void testDbConnexion() {
+		String serverName = ipServer.getText();
+		String mydatabase = dbName.getText();
+		String port = portNumber.getText();
+		String user = userLog.getText();
+		String password = userPwd.getText();
+
+		try {
+			Connection connexion = DriverManager.getConnection("jdbc:mysql://" + serverName + ":" + port + "/" + mydatabase, user, password);
+			System.out.println("Connexion réussie");
+
+		} catch (SQLException e) {
+			System.out.println("Connexion échouée");
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Save db.
+	 *
+	 * @param title    the title
+	 * @param desc     the desc
+	 * @param price    the price
+	 * @param category the category
+	 * @param year     the year
+	 */
+	public void saveDb(String title, String desc, String price, int category, String year) {
+		Dotenv dotenv = Dotenv.load();
+		final String INSERT_SQL = "INSERT INTO recherche (titre, description, prix, genre, description) VALUES (?, ?, ?, ?, ?)";
+
+		try (Connection connexion = DriverManager.getConnection(
+						"jdbc:mysql://" + dotenv.get("DB_HOST") + ":" + dotenv.get("DB_PORT") + "/" + dotenv.get("DB_NAME"), dotenv.get("DB_USER"), dotenv.get("DB_PASSWORD"));
+				 PreparedStatement preparedStatement = connexion.prepareStatement(INSERT_SQL)) {
+			preparedStatement.setString(1, title);
+			preparedStatement.setString(2, desc);
+			preparedStatement.setString(3, price);
+			preparedStatement.setInt(4, category);
+			preparedStatement.setString(5, year);
+			int row = preparedStatement.executeUpdate();
+			System.out.println(row + " row(s) affected");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * On click save db.
+	 */
+	@FXML
+	public void onClickSaveDb() {
+		try {
+			testDbConnexion();
+
+			for (Article article : articles) {
+				int idGenre = switch (article.getCategory()) {
+					case "Rock" -> 1;
+					case "Blues" -> 2;
+					case "Jazz" -> 3;
+					case "Reggae" -> 4;
+					case "Funk" -> 5;
+					case "Electro" -> 6;
+					case "DubStep" -> 7;
+					case "Soul" -> 8;
+					default -> 0;
+				};
+
+				saveDb(article.getTitle(), article.getDescription(), article.getPrice(), idGenre, article.getDate());
+				System.out.println("Tout est sauvegardé");
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
